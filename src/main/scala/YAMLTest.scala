@@ -13,14 +13,22 @@ import math._
 
 object YAMLTest extends MainFrame with App
 {
-//	val yaml =
-//		new YAML
-//		{
-//		val resource = getClass
-//			
-//		}
-//	val p = yaml processDocument
-//"""asdf"""
+	val yaml =
+		new YAML
+		{
+			val resource = getClass
+
+			def out( o: Any ) = println( o )		
+		}
+	val p = yaml processDocument
+"""
+\font Serif-plain-24
+\bfont Serif-bold-24
+ASDF
+
+\b ASDF
+\vfil
+"""
 
 //	def f( x: Double ) = sin(4*x)/* + sin(2*x)*/
 //	
@@ -56,7 +64,7 @@ object YAMLTest extends MainFrame with App
 		fg setComposite TRANSPARENT
 		fg.fillRect( 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT )
 		fg.setRenderingHint( KEY_ANTIALIASING, VALUE_ANTIALIAS_ON )
-//		p.draw( fg, 0, 0 )
+		p.draw( fg, 0, 0 )
 //		ImageIO.write( fgimg, "PNG", new File("wallpaper.png") )
 
 	contents =
