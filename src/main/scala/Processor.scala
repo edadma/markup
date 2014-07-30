@@ -7,14 +7,14 @@ import java.util.regex.Pattern
 
 import util.parsing.input.Reader
 import collection.mutable.{HashMap, ArrayBuffer, ListBuffer}//, ArrayStack, ArrayBuffer, HashMap, HashSet}
-import collection.immutable.LinearSeq
+//import collection.immutable.LinearSeq
 
 import typesetter._
 
 
 abstract class Processor extends Typesetter with MarkupReader
 {
-	type PrimitiveHandler = (Token, LinearSeq[Token]) => LinearSeq[Token]
+	type PrimitiveHandler = (Token, Reader[Token]) => Reader[Token]
 	
 	protected var typeset = false
 	
@@ -29,12 +29,12 @@ abstract class Processor extends Typesetter with MarkupReader
 
 	protected class NonExecutableHandler extends PrimitiveHandler
 	{
-		def apply( t: Token, s: LinearSeq[Token] ) = MarkupReader.error( "non-executable marker", t )
+		def apply( t: Token, s: Reader[Token] ) = MarkupReader.error( "non-executable marker", t )
 	}
 	
 	protected class BasicHandler( action: => Unit ) extends PrimitiveHandler
 	{
-		def apply( t: Token, s: LinearSeq[Token] ) =
+		def apply( t: Token, s: Reader[Token] ) =
 		{
 			action
 			s
@@ -43,9 +43,9 @@ abstract class Processor extends Typesetter with MarkupReader
 	
 	protected class MidHandler( pre: => Unit, post: => Unit, endcode: (String => Nothing) => Unit ) extends PrimitiveHandler
 	{
-		def apply( t: Token, s: LinearSeq[Token] ) =
+		def apply( t: Token, s: Reader[Token] ) =
 		{
-			if (s.isEmpty) MarkupReader.error( "argument was expected", t.rest )
+			if (s.atEnd) MarkupReader.error( "argument was expected", s )
 			
 			pre
 			
@@ -715,36 +715,3 @@ abstract class Processor extends Typesetter with MarkupReader
 		box
 	}
 }
-
-/*
-object HammingTest {
-  // A convenience object for stream pattern matching
-  object #:: {
-    class TailWrapper[+A](s: Stream[A]) {
-      def unwrap = s.tail
-    }
-    object TailWrapper {
-      implicit def unwrap[A](wrapped: TailWrapper[A]) = wrapped.unwrap
-    }
-    def unapply[A](s: Stream[A]): Option[(A, TailWrapper[A])] = {
-      if (s.isEmpty) None
-      else {
-        Some(s.head, new TailWrapper(s))
-      }
-    }
-  }
-
-  def merge(a: Stream[BigInt], b: Stream[BigInt]): Stream[BigInt] =
-    (a, b) match {
-      case (x #:: xs, y #:: ys) =>
-        if (x < y) x #:: merge(xs, b)
-        else if (y < x) y #:: merge(a, ys)
-        else x #:: merge(xs, ys)
-    }                                             //> merge: (a: Stream[BigInt], b: Stream[BigInt])Stream[BigInt]
-
-  lazy val numbers: Stream[BigInt] =
-    1 #:: merge(numbers map { _ * 2 }, merge(numbers map { _ * 3 }, numbers map { _ * 5 }))
-                                                  //> numbers  : Stream[BigInt] = <lazy>
-  numbers.take(10).toList                         //> res0: List[BigInt] = List(1, 2, 3, 4, 5, 6, 8, 9, 10, 12)
-}
-*/

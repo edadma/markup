@@ -4,7 +4,6 @@ import java.io.{Reader => JReader, File, FileReader, StringReader, BufferedReade
 
 import util.parsing.input.{StreamReader, Reader, Position, OffsetPosition}
 import collection.mutable.{Buffer, ArrayBuffer, ListBuffer, HashMap}
-import collection.immutable.LinearSeq
 
 import typesetter.Util
 
@@ -15,12 +14,12 @@ object MarkupReader
 	
 	def error( msg: String, tok: Token ): Nothing = error( msg, tok.pos )
 	
-	def error( msg: String, r: Reader[Char] ): Nothing = error( msg, r.pos )
+	def error( msg: String, r: Reader[_] ): Nothing = error( msg, r.pos )
 }
 
 trait MarkupReader
 {
-	type TranslationHandler = LinearSeq[Token] => Stream[Token]
+	type TranslationHandler = Reader[Token] => Reader[Token]
 	
 	protected def variable: Map[Symbol, Any]
 	
@@ -54,7 +53,31 @@ trait MarkupReader
 
 	protected def isActiveChar( ch: Char ): Boolean
 
-	protected 	def bumpPosition( p: Position ) =
+	protected def tokenReader( _first: Token, _rest:=> Reader[Token], _pos: Position ) =
+		new Reader[Token]
+		{
+			val atEnd = false
+			
+			val first = _first
+			
+			val rest = _rest
+			
+			val pos = _pos
+		}
+		
+	protected def endReader( _pos: Position ) =
+		new Reader[Token]
+		{
+			val atEnd = true
+			
+			def first = throw new NoSuchMethodError( "at end" )
+			
+			def rest = throw new NoSuchMethodError( "at end" )
+			
+			val pos = _pos
+		}
+		
+	protected def bumpPosition( p: Position ) =
 	{
 		new Position
 		{
@@ -107,42 +130,42 @@ trait MarkupReader
 
 	def readFromFile( resource: Class[_], file: String ) = read( new BufferedReader(new InputStreamReader(Util.stream(resource, file), "UTF-8")) )
 	
-	def read( r: JReader ): Stream[Token] = read( StreamReader(r) )
+	def read( r: JReader ): Reader[Token] = read( StreamReader(r) )
 	
-	def read( s: String ): Stream[Token] = read( new StringReader(s) )
+	def read( s: String ): Reader[Token] = read( new StringReader(s) )
 	
-	def read( r: Reader[Char] ): Stream[Token] = expandTokenStream( readTokenStream(r) )
+	def read( r: Reader[Char] ): Reader[Token] = expandTokenStream( readTokenStream(r) )
 
-	def expandTokenStream( s: LinearSeq[Token] ): Stream[Token] =
-		if (s.isEmpty)
-			Stream.Empty
+	def expandTokenStream( s: Reader[Token] ): Reader[Token] =
+		if (s.atEnd)
+			s
 		else
 		{
-			s.head match
+			s.first match
 			{
 				case Marker( name ) =>
 					variable get Symbol( '\\' + name ) match
 					{
-						case Some( handler: TranslationHandler ) => return expandTokenStream( handler(s.tail) )
+						case Some( handler: TranslationHandler ) => return expandTokenStream( handler(s.rest) )
 						case _ =>
 					}
 				case Active( ch ) =>
 					variable get Symbol( "~" + ch ) match
 					{
-						case Some( handler: TranslationHandler ) => return expandTokenStream( handler(s.tail) )
+						case Some( handler: TranslationHandler ) => return expandTokenStream( handler(s.rest) )
 						case _ =>
 					}
 				case _ => 
 			}
 
-			Stream.cons( s.head, expandTokenStream(s.tail) )
+			tokenReader( s.first, expandTokenStream(s.rest), s.pos )
 		}
 	
-	protected def skipSpace( s: LinearSeq[Token] ) = if (!s.isEmpty && s.head == Space()) s.tail else s
+	protected def skipSpace( s: Reader[Token] ) = if (!s.atEnt && s.first == Space()) s.rest else s
 	
-	class MarcroTranslation( body: LinearSeq[Token], argc: Int ) extends TranslationHandler
+	class MarcroTranslation( body: Reader[Token], argc: Int ) extends TranslationHandler
 	{
-		def apply( s: LinearSeq[Token] ): Stream[Token] =
+		def apply( s: Reader[Token] ): Reader[Token] =
 		{
 		val (args, rest) = arguments( s, argc )
 		
@@ -150,7 +173,7 @@ trait MarkupReader
 		}
 	}
 
-	protected def argument( s: LinearSeq[Token] ) =	
+	protected def argument( s: Reader[Token] ) =	
 	{
 	val buf = new ListBuffer[Token]
 	val (end, rest) = tokenList( buf, 0, s )
@@ -158,7 +181,7 @@ trait MarkupReader
 		(buf.toList, end, rest)
 	}
 	
-	protected def tokenList( buf: Buffer[Token], count: Int, s: LinearSeq[Token] ): (Token, LinearSeq[Token]) =
+	protected def tokenList( buf: Buffer[Token], count: Int, s: Reader[Token] ): (Token, Reader[Token]) =
 		if (s.isEmpty)
 			sys.error( "unexpected end of input - unclosed group" )
 		else
@@ -189,7 +212,7 @@ trait MarkupReader
 						(t, s.tail)
 			}
 	
-	protected def arguments( s: LinearSeq[Token], argc: Int ) =
+	protected def arguments( s: Reader[Token], argc: Int ) =
 	{
 	val args = new Array[List[Token]]( argc )
 	var next = s
@@ -209,18 +232,18 @@ trait MarkupReader
 		(args.toIndexedSeq, next)
 	}
 
-	protected def argumentGroup( s: LinearSeq[Token] ) =	
+	protected def argumentGroup( s: Reader[Token] ) =	
 	{
 		if (s.head != Begin()) MarkupReader.error( "argument group expected", s.head )
 		
 		argument( s )
 	}
 	
-	def replaceParameters( s: LinearSeq[Token], replacements: IndexedSeq[List[Token]], numbered: Boolean ) =
+	def replaceParameters( s: Reader[Token], replacements: IndexedSeq[List[Token]], numbered: Boolean ) =
 	{
 	val buf = new ListBuffer[Token]
 	
-		def _replace( s: LinearSeq[Token] )
+		def _replace( s: Reader[Token] )
 		{
 			if (!s.isEmpty)
 				s.head match
