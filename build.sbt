@@ -18,7 +18,7 @@ libraryDependencies ++= Seq(
 resolvers += "Hyperreal Repository" at "http://hyperreal.ca/maven2"
 
 libraryDependencies ++= Seq(
-	"org.lteditor" %% "typesetter" % "0.1"
+	"org.lteditor" %% "typesetter" % "0.2"
 	)
 
 publishTo := Some( Resolver.sftp( "private", "hyperreal.ca", "/var/www/maven2" ) )

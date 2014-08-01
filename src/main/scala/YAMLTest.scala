@@ -24,9 +24,8 @@ object YAMLTest extends MainFrame with App
 """
 \font Serif-plain-24
 \bfont Serif-bold-24
-ASDF
-
-\b ASDF
+\vfil
+\hb asdf
 \vfil
 """
 
