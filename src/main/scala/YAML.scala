@@ -33,8 +33,10 @@ abstract class YAML extends Processor with YAMLReader
 		\def\nkjv 2 {\biblequote{#1} NKJV {#2}}
 		\def\amp 2 {\biblequote{#1} AMP {#2}}
 		\def\biblequote 3 {\m\b{#1} (#2)\m\vv{#3}}
-		\def\ltnkjv 2 {\lowerthird1{\nkjv {#1} {#2}}}
-		\def\lowerthird1{\vskip 480 \translucent 5 \vbt 230 {\hsize1270 #1}}
+		\def\ltnkjv 2 {\lowerthird{\nkjv {#1} {#2}}}
+		\def\lowerthird 1 {\vskip 480 \translucent 5 \vbt 230 {\hsize1270 #1 \vfil}}
+		\def\lhnkjv 2 {\lowerhalf{\nkjv {#1} {#2}}}
+		\def\lowerhalf 1 {\vskip 360 \translucent 5 \vbt 350 {\hsize1270 #1 \vfil}}
 		
 		
 		useful macros

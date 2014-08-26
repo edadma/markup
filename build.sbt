@@ -1,6 +1,6 @@
 name := "Markup"
 
-version := "0.1"
+version := "0.2"
 
 scalaVersion := "2.11.2"
 
@@ -21,7 +21,7 @@ libraryDependencies ++= Seq(
 	"org.lteditor" %% "typesetter" % "0.2"
 	)
 
-publishTo := Some( Resolver.sftp( "private", "hyperreal.ca", "/var/www/hyperreal.ca/html/maven2" ) )
+publishTo := Some( Resolver.sftp( "private", "hyperreal.ca", "/var/www/hyperreal.ca/maven2" ) )
 
 publishArtifact in Test := false
 

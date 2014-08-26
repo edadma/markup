@@ -24,9 +24,7 @@ object YAMLTest extends MainFrame with App
 """
 \font Serif-plain-24
 \bfont Serif-bold-24
-\vfil
-\hb asdf
-\vfil
+\lhnkjv {asdf} {asdf}
 """
 
 //	def f( x: Double ) = sin(4*x)/* + sin(2*x)*/
