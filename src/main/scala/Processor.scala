@@ -715,36 +715,3 @@ abstract class Processor extends Typesetter with MarkupReader
 		box
 	}
 }
-
-/*
-object HammingTest {
-  // A convenience object for stream pattern matching
-  object #:: {
-    class TailWrapper[+A](s: Stream[A]) {
-      def unwrap = s.tail
-    }
-    object TailWrapper {
-      implicit def unwrap[A](wrapped: TailWrapper[A]) = wrapped.unwrap
-    }
-    def unapply[A](s: Stream[A]): Option[(A, TailWrapper[A])] = {
-      if (s.isEmpty) None
-      else {
-        Some(s.head, new TailWrapper(s))
-      }
-    }
-  }
-
-  def merge(a: Stream[BigInt], b: Stream[BigInt]): Stream[BigInt] =
-    (a, b) match {
-      case (x #:: xs, y #:: ys) =>
-        if (x < y) x #:: merge(xs, b)
-        else if (y < x) y #:: merge(a, ys)
-        else x #:: merge(xs, ys)
-    }                                             //> merge: (a: Stream[BigInt], b: Stream[BigInt])Stream[BigInt]
-
-  lazy val numbers: Stream[BigInt] =
-    1 #:: merge(numbers map { _ * 2 }, merge(numbers map { _ * 3 }, numbers map { _ * 5 }))
-                                                  //> numbers  : Stream[BigInt] = <lazy>
-  numbers.take(10).toList                         //> res0: List[BigInt] = List(1, 2, 3, 4, 5, 6, 8, 9, 10, 12)
-}
-*/

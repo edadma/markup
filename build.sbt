@@ -1,6 +1,6 @@
 name := "Markup"
 
-version := "0.2"
+version := "0.3"
 
 scalaVersion := "2.11.2"
 
@@ -18,7 +18,7 @@ libraryDependencies ++= Seq(
 resolvers += "Hyperreal Repository" at "http://hyperreal.ca/maven2"
 
 libraryDependencies ++= Seq(
-	"org.lteditor" %% "typesetter" % "0.2"
+	"org.lteditor" %% "typesetter" % "0.3"
 	)
 
 publishTo := Some( Resolver.sftp( "private", "hyperreal.ca", "/var/www/hyperreal.ca/maven2" ) )

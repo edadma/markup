@@ -461,6 +461,8 @@ abstract class YAML extends Processor with YAMLReader
 
 	define( "par" ) {par}
 	
+	define( "raggedright" ) {raggedright}
+	
 	defineMidMode( "hb" ) {hbox} ()
 	
 	defineStrMidMode[Dimen]( "hbt", "expected 'to' dimension" ) {d => hbox( To(d) )} ()
@@ -502,6 +504,10 @@ abstract class YAML extends Processor with YAMLReader
 	defineSkipVar( "parskip" )
 	
 	defineSkipVar( "parfillskip" )
+	
+	defineSkipVar( "spaceskip" )
+	
+	defineSkipVar( "xspaceskip" )
 	
 	defineDimenVar( "hsize" )
 	
