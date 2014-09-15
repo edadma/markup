@@ -437,6 +437,10 @@ abstract class YAML extends Processor with YAMLReader
 	
 	define( "vfil" ) {vfil}
 	
+	define( "hfill" ) {hfill}
+	
+	define( "vfill" ) {vfill}
+	
 	define( "hss" ) {hss}
 	
 	define( "vss" ) {vss}
