@@ -2,9 +2,9 @@ package markup
 
 import java.io.{Reader => JReader, File, FileReader, StringReader, BufferedReader, InputStreamReader}
 
-import util.parsing.input.{StreamReader, Reader, Position, OffsetPosition}
+import util.parsing.input.{StreamReader, PagedSeqReader, Reader, Position, OffsetPosition}
 import collection.mutable.{Buffer, ArrayBuffer, ListBuffer, HashMap}
-import collection.immutable.LinearSeq
+import collection.immutable.{PagedSeq, LinearSeq}
 
 import typesetter.Util
 
@@ -69,14 +69,14 @@ trait MarkupReader
 	protected def isSpace( r: Reader[Char] ) = r.first.isWhitespace && (r.first != '\n' || !isActiveChar( '\n' ))
 	
 	protected def skipSpaceOnLine( r: Reader[Char] ): Reader[Char] =
-		if (isSpace( r ) && r.first != '\n')
+		if (!r.atEnd && isSpace( r ) && r.first != '\n')
 			skipSpaceOnLine( r.rest )
 		else
 			r
 
 	protected def paragraph( r: Reader[Char] ) =
-		paragraphMarker != None && r.first == '\n' && !isActiveChar( '\n' ) && !r.rest.atEnd &&
-		!skipSpaceOnLine( r.rest ).atEnd && skipSpaceOnLine( r.rest ).first == '\n'
+		paragraphMarker != None && !r.atEnd && r.first == '\n' && !isActiveChar( '\n' ) && !r.rest.atEnd &&
+			!skipSpaceOnLine( r.rest ).atEnd && skipSpaceOnLine( r.rest ).first == '\n'
 
 	protected def skipSpace( r: Reader[Char] ): Reader[Char] =
 		if (isSpace( r ))
@@ -107,7 +107,7 @@ trait MarkupReader
 
 	def readFromFile( resource: Class[_], file: String ) = read( new BufferedReader(new InputStreamReader(Util.stream(resource, file), "UTF-8")) )
 	
-	def read( r: JReader ): Stream[Token] = read( StreamReader(r) )
+	def read( r: JReader ): Stream[Token] = read( new PagedSeqReader(PagedSeq.fromReader(r)) )
 	
 	def read( s: String ): Stream[Token] = read( new StringReader(s) )
 	
