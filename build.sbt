@@ -2,39 +2,48 @@ name := "Markup"
 
 version := "0.4"
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.6"
 
 scalacOptions ++= Seq( "-deprecation", "-feature", "-language:postfixOps", "-language:implicitConversions", "-language:existentials" )
 
 incOptions := incOptions.value.withNameHashing( true )
 
-organization := "org.lteditor"
+organization := "ca.hyperreal"
 
 libraryDependencies ++= Seq(
 	"org.scala-lang.modules" %% "scala-swing" % "1.0.1",
-	"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.2"
+	"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.3"
 	)
 
-resolvers += "Hyperreal Repository" at "http://hyperreal.ca/maven2"
+resolvers += "Hyperreal Repository" at "https://dl.bintray.com/edadma/maven"
 
 libraryDependencies ++= Seq(
-	"org.lteditor" %% "typesetter" % "0.4"
+	"ca.hyperreal" %% "typesetter" % "0.4"
 	)
 
-publishTo := Some( Resolver.sftp( "private", "hyperreal.ca", "/var/www/hyperreal.ca/maven2" ) )
+import AssemblyKeys._
+
+assemblySettings
+
+mainClass in assembly := Some( "ca.hyperreal.sscheme.Main" )
+
+jarName in assembly := name.value + "-" + version.value + ".jar"
+
+
+seq(bintraySettings:_*)
 
 publishArtifact in Test := false
 
 pomIncludeRepository := { _ => false }
 
-licenses := Seq("GPL" -> url("http://opensource.org/licenses/GPL-3.0"))
+licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT"))
 
-homepage := Some(url("https://github.com/LTEditor/markup"))
+homepage := Some(url("https://github.com/edadma/markup"))
 
 pomExtra := (
   <scm>
-    <url>git@github.com:LTEditor/markup.git</url>
-    <connection>scm:git:git@github.com:LTEditor/markup.git</connection>
+    <url>git@github.com:edadma/markup.git</url>
+    <connection>scm:git:git@github.com:edadma/markup.git</connection>
   </scm>
   <developers>
     <developer>
