@@ -1,4 +1,4 @@
-name := "Markup"
+name := "markup"
 
 version := "0.4"
 
@@ -9,14 +9,14 @@ scalacOptions ++= Seq( "-deprecation", "-feature", "-language:postfixOps", "-lan
 organization := "xyz.hyperreal"
 
 libraryDependencies ++= Seq(
-	"org.scala-lang.modules" %% "scala-swing" % "2.1.0",
+	"org.scala-lang.modules" %% "scala-swing" % "2.1.1",
 	"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
 	)
 
 resolvers += "Hyperreal Repository" at "https://dl.bintray.com/edadma/maven"
 
 libraryDependencies ++= Seq(
-	"ca.hyperreal" %% "typesetter" % "0.4"
+	"xyz.hyperreal" %% "typesetter" % "0.5"
 	)
 
 publishArtifact in Test := false

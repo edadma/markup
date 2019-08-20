@@ -1,4 +1,4 @@
-package markup
+package xyz.hyperreal.markup
 
 import java.awt.{AlphaComposite}
 import java.awt.RenderingHints._
@@ -11,7 +11,7 @@ import swing._
 import math._
 
 
-object YAMLTest extends MainFrame with App
+object MarkupTest extends MainFrame with App
 {
 	val yaml =
 		new YAML
@@ -32,7 +32,7 @@ object YAMLTest extends MainFrame with App
 
 //	def f( x: Double ) = sin(4*x)/* + sin(2*x)*/
 //	
-//\frame \draw {mc \circlef 5 org \path {\plot markup.YAMLTest.f -3.14 3.14 50 50}}
+//\frame \draw {mc \circlef 5 org \path {\plot markup.MarkupTest.f -3.14 3.14 50 50}}
 
 //	\tabskip20pt
 //	\halign

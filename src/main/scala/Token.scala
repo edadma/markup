@@ -1,4 +1,4 @@
-package markup
+package xyz.hyperreal.markup
 
 import util.parsing.input.{Reader, Position}
 
@@ -37,4 +37,4 @@ case class Param() extends Token
 case class Active( ch: Char ) extends Token
 //case class LetterChar( ch: Char ) extends Token
 //case class OtherChar( ch: Char ) extends Token
-case class Space() extends Token
+case object SpaceToken extends Token

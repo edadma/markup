@@ -1,12 +1,11 @@
-package markup
+package xyz.hyperreal.markup
 
-import java.io.{Reader => JReader, File, FileReader, StringReader, BufferedReader, InputStreamReader}
+import java.io.{BufferedReader, File, FileReader, InputStreamReader, StringReader, Reader => JReader}
 
-import util.parsing.input.{StreamReader, PagedSeqReader, Reader, Position, OffsetPosition}
-import collection.mutable.{Buffer, ArrayBuffer, ListBuffer, HashMap}
-import collection.immutable.{PagedSeq, LinearSeq}
-
-import typesetter.Util
+import util.parsing.input.{OffsetPosition, PagedSeq, PagedSeqReader, Position, Reader, StreamReader}
+import collection.mutable.{ArrayBuffer, Buffer, HashMap, ListBuffer}
+import collection.immutable.LinearSeq
+import xyz.hyperreal.typesetter.Util
 
 
 object MarkupReader
@@ -138,7 +137,7 @@ trait MarkupReader
 			Stream.cons( s.head, expandTokenStream(s.tail) )
 		}
 	
-	protected def skipSpace( s: LinearSeq[Token] ) = if (!s.isEmpty && s.head == Space()) s.tail else s
+	protected def skipSpace( s: LinearSeq[Token] ) = if (!s.isEmpty && s.head == SpaceToken) s.tail else s
 	
 	class MarcroTranslation( body: LinearSeq[Token], argc: Int ) extends TranslationHandler
 	{
@@ -321,7 +320,7 @@ trait MarkupReader
 			if (paragraph( r ))
 				Some( Marker(paragraphMarker.get) pos r.pos rest skipSpaceOnLine(r.rest).rest )
 			else
-				Some( Space() pos r.pos rest skipSpace(r.rest) )
+				Some( SpaceToken pos r.pos rest skipSpace(r.rest) )
 		else if (isBeginChar( r.first ))
 			Some( Begin() pos r.pos rest r.rest )
 		else if (isEndChar( r.first ))
@@ -440,7 +439,7 @@ trait YAMLReader extends TeXStyleReader
 	protected def isActiveChar( ch: Char ) = variable contains Symbol( "~" + ch )
 }
 
-//object YAMLReaderTest extends App with YAMLReader
+//object MarkupReaderTest extends App with MarkupReader
 //{
 //	printTokens(
 //"""

@@ -1,4 +1,4 @@
-package markup
+package xyz.hyperreal.markup
 
 import java.awt.Font._
 import java.awt.{Color, BasicStroke}
@@ -9,7 +9,7 @@ import javax.imageio.ImageIO
 import collection.immutable.LinearSeq
 import collection.mutable.{ArrayBuffer, ListBuffer}
 
-import typesetter._
+import xyz.hyperreal.typesetter._
 
 
 abstract class YAML extends Processor with YAMLReader
@@ -66,9 +66,9 @@ abstract class YAML extends Processor with YAMLReader
 		\def\title1{\centerline{\b{#1}}\vskip10}
 		\def\heading1{\vskip15\hb{\b{#1}}\vskip5\m}
 		
-		\def\YAMLL{\hb{\font "resources/cm-unicode-0.7.0/cmunrm.ttf-plain-30" Y\kern-10{\font "resources/cm-unicode-0.7.0/cmunrm.ttf-plain-24" A}\kern-5 M\kern-10 L}}
-		\def\YAML{\hb{\font "resources/cm-unicode-0.7.0/cmunrm.ttf-plain-24" Y\kern-8{\font "resources/cm-unicode-0.7.0/cmunrm.ttf-plain-20" A}\kern-4 M\kern-8 L}}
-		\def\YAMLb{\hb{\font "resources/cm-unicode-0.7.0/cmunrb.ttf-plain-24" Y\kern-8{\font "resources/cm-unicode-0.7.0/cmunrb.ttf-plain-20" A}\kern-4 M\kern-9 L}}
+		\def\MarkupL{\hb{\font "resources/cm-unicode-0.7.0/cmunrm.ttf-plain-30" Y\kern-10{\font "resources/cm-unicode-0.7.0/cmunrm.ttf-plain-24" A}\kern-5 M\kern-10 L}}
+		\def\Markup{\hb{\font "resources/cm-unicode-0.7.0/cmunrm.ttf-plain-24" Y\kern-8{\font "resources/cm-unicode-0.7.0/cmunrm.ttf-plain-20" A}\kern-4 M\kern-8 L}}
+		\def\Markupb{\hb{\font "resources/cm-unicode-0.7.0/cmunrb.ttf-plain-24" Y\kern-8{\font "resources/cm-unicode-0.7.0/cmunrb.ttf-plain-20" A}\kern-4 M\kern-9 L}}
 		\def\TeX{T\kern-.1667em\lower.5ex E\kern-.125em X}
 		"""
 
@@ -671,7 +671,7 @@ abstract class YAML extends Processor with YAMLReader
 					{
 					case Str( s ) => out( s )
 					case QStr( s ) => out( s )
-					case Space() => out( " " )
+					case SpaceToken => out( " " )
 					}
 					
 					p( l.tail )
@@ -719,7 +719,7 @@ abstract class YAML extends Processor with YAMLReader
 		{
 			case Nil =>
 				Nil
-			case Space() :: t =>
+			case SpaceToken :: t =>
 				_pp( t )
 			case _ => _pp( l )
 		}
@@ -729,7 +729,7 @@ abstract class YAML extends Processor with YAMLReader
 		{
 			case Nil =>
 				Nil
-			case Str(s) :: Space() :: t if (s matches "\\d+") =>
+			case Str(s) :: SpaceToken :: t if (s matches "\\d+") =>
 				Marker( "v" ) :: Str( s ) :: _pp( t )
 			case (tok@Str(s)) :: t if (s matches ".+\\[.+\\].*|.*\\[.+\\].+") =>
 				Str( s.replaceAll("\\[.+\\]", "") ).pos( tok.pos ) :: _pp( t )

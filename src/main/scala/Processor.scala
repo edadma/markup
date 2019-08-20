@@ -1,4 +1,4 @@
-package markup
+package xyz.hyperreal.markup
 
 import java.io.{Reader => JReader, File}
 import java.awt.Color
@@ -9,7 +9,7 @@ import util.parsing.input.Reader
 import collection.mutable.{HashMap, ArrayBuffer, ListBuffer}//, ArrayStack, ArrayBuffer, HashMap, HashSet}
 import collection.immutable.LinearSeq
 
-import typesetter._
+import xyz.hyperreal.typesetter._
 
 
 abstract class Processor extends Typesetter with MarkupReader
@@ -657,7 +657,7 @@ abstract class Processor extends Typesetter with MarkupReader
 			case QStr( w ) =>
 				qstring( w )
 				s.tail
-			case Space() =>
+			case SpaceToken =>
 				if (typeset)
 					space
 
